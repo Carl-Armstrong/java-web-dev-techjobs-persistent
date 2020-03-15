@@ -13,4 +13,6 @@
 
 ## Part 3: Test it with SQL
 
+    drop table job;
+
 ## Part 4: Test it with SQL
