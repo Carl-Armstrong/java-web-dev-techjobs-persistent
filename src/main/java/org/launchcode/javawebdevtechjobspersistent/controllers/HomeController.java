@@ -2,6 +2,7 @@ package org.launchcode.javawebdevtechjobspersistent.controllers;
 
 import org.launchcode.javawebdevtechjobspersistent.models.Employer;
 import org.launchcode.javawebdevtechjobspersistent.models.Job;
+import org.launchcode.javawebdevtechjobspersistent.models.Skill;
 import org.launchcode.javawebdevtechjobspersistent.models.data.EmployerRepository;
 import org.launchcode.javawebdevtechjobspersistent.models.data.JobRepository;
 import org.launchcode.javawebdevtechjobspersistent.models.data.SkillRepository;
@@ -12,6 +13,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -48,7 +50,7 @@ public class HomeController {
 
     @PostMapping("add")
     public String processAddJobForm(@ModelAttribute @Valid Job newJob,
-                                       Errors errors, Model model, @RequestParam int employerId/*, @RequestParam List<Integer> skills*/) {
+                                       Errors errors, Model model, @RequestParam int employerId, @RequestParam List<Integer> skills) {
 
 
         if (errors.hasErrors()) {
@@ -57,6 +59,8 @@ public class HomeController {
             model.addAttribute("skills", skillRepository.findAll());
             return "add";
         }
+
+        List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
 
         Optional<Employer> employerResult = employerRepository.findById(employerId);
         if (employerResult.isEmpty()) {
@@ -69,6 +73,10 @@ public class HomeController {
             newJob.setEmployer(employer);
         }
 
+        for (Skill skill : skillObjs
+             ) {
+            newJob.addSkill(skill);
+        }
         jobRepository.save(newJob);
 
         return "view";

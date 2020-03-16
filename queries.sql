@@ -16,3 +16,8 @@
     drop table job;
 
 ## Part 4: Test it with SQL
+
+    select distinct name, description
+    from skill
+    inner join job_skills on skill.id = job_skills.skills_id
+    order by skill.name;
